@@ -1,0 +1,62 @@
+#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+#include<time.h>
+int main()
+{
+  char h;
+  int x;
+  /*圣诞树副本*/
+  printf("\n       Marry Christmas \n");
+  printf("   ***********************\n");
+  int i,j,a,b,n;
+  for(i=1;i<15;i++)
+  {
+    for(a=14;a>=i;a--)
+    {
+      printf(" ");
+    }
+    for(b=1;b<=i+1;b++)
+    {
+      printf("*");
+    }
+    for(n=1;n<=i;n++)
+    {
+      printf("*");
+    }
+    printf("\n");
+  }
+  for(j=1;j<=5;j++)
+  {
+    printf("              ***\n");
+  }
+  printf("啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦\n");
+  printf("来抽取新的一年里的幸运数字\n");
+  printf("输入lucky就好啦:");
+  scanf("%s",&h);
+  srand(time(0));
+  printf("这就是你的新年幸运数字：%d\n",x=rand()%10+1);
+  printf("打出自己喜欢的数字(可以重复打哦,想结束就打88):");
+  int num;
+  while (scanf("%d",&num)!=EOF)
+  {
+    if(num==88)
+    break;
+    switch(num)
+   {
+     case 1:printf("圣诞快乐！也祝今年完美度过！\n");break;
+     case 2:printf("一切烦恼全部留在2021，张开双臂去迎接2022！\n");break;
+     case 3:printf("不平凡的一年，充满着美好回忆的一年，值得铭记的一年！\n");break;
+     case 4:printf("期待2022是充满美好的一年，也愿2022是美好的一年\n");break;
+     case 5:printf("这一年或许发生了很多让你无法忘怀的事情，或难过或喜悦，但无论如何，都是一份记忆。就让所有的遗憾化为句点，留在这2021。\n");break;
+     case 6:printf("美和实际人生有一个距离，要见出事物本身的美，须把它摆在适当的距离之外去看——《厚积落叶听雨声》\n");break;
+     case 7:printf("7，最喜欢的数字。7777777！要在新的一年七七大顺，不要六六大顺。\n");break;
+     case 8:printf("要趁着初春，去好好品味一下生命的颜色，美好且动人。\n");break;
+     case 9:printf("趁年轻，去努力，去做自己想做的事。想做什么就去做，不要后悔。\n");break;
+     default :printf("提前祝福元旦快乐，新年快乐！\n");
+   }
+  }
+  printf("啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦\n");
+  printf("祝新的一年天天开心！");
+  return 0;
+  }
