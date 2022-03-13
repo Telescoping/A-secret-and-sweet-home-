@@ -1,0 +1,44 @@
+#include<stdio.h>
+#include<string.h>
+int main()
+{
+    char str[77];
+    gets(str);
+    int b[77];
+    int i=0,j,k=1;
+    int t=strlen(str);
+    for(i=0;i<t;i++)
+    {
+        b[i]=str[i]-'0';
+    }
+    if(t%2==0)
+    {
+    	for(i=0,j=1;j<=(t/2);j++,i+=2)
+    	{
+    		printf("%d",b[i]*10+b[i+1]);
+    		if(k<(t/2))
+    		{
+    			printf(",");
+    			k++;
+			}
+		}
+	}
+	else if(t%2!=0)
+	{
+		for(i=0,j=1;j<=(t/2);j++,i+=2)
+		{
+			printf("%d",b[i]*10+b[i+1]);
+			if(k<=(t/2))
+			{
+				printf(",");
+				k++;
+			}
+		}
+		if(j==(t/2)+1)
+		{
+			printf("%d",b[t-1]);
+		}
+	}
+    return 0;
+}
+/*简单的数字字符转换为常数*/
