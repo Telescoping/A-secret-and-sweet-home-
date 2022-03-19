@@ -28,3 +28,29 @@ int main()
     return 0;
 }
 仿写答案，不完全正确，日后重写。
+#include <stdio.h>
+int main()
+{
+    char n[100];
+    scanf("%s",&n);//不能用gets
+    int sum=0;
+    int i;
+    for(i=0;n[i]!='\0';i++)
+    {
+        sum+=(n[i]-'0');
+    }
+    char z[10][10]={"ling","yi","er","san","si","wu","liu","qi","ba","jiu"};
+    if(sum>=100)
+    {
+        printf("%s %s %s",z[sum/100],z[sum%100/10],z[sum%10]);
+    }
+    else if(sum>=10)
+    {
+        printf("%s %s",z[sum/10],z[sum%10]);
+    }
+    else
+    {
+        printf("%s",z[sum]);
+    }
+    return 0;
+}
