@@ -1,0 +1,27 @@
+#include<stdio.h>
+int a[105];
+int main()
+{
+    int n,t;
+    scanf("%d %d",&n,&t);
+    int i,j;
+    for(i=0;i<n;i++)
+    {
+        scanf("%d",&a[i]);
+    }
+    for(j=1;j<=t;j++)
+    {
+        int m=a[n-1];
+        for(i=n-2;i>=0;i--)
+        {
+            a[i+1]=a[i];
+        }
+        a[0]=m;
+    }
+    for(i=0;i<n-1;i++)
+    {
+        printf("%d ",a[i]);
+    }
+    printf("%d",a[n-1]);
+    return 0;
+}
