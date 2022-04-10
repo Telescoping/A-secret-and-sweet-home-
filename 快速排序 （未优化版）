@@ -1,0 +1,51 @@
+#include <stdio.h>
+int a[101];
+int n;
+void quicksort(int left,int right);
+int main()
+{
+    scanf("%d",&n);
+    int i;
+    for(i=1;i<=n;++i)
+    {
+        scanf("%d",&a[i]);
+    }
+    quicksort(1,n);
+    for(i=1;i<=n;++i)
+    {
+        printf("%d ",a[i]);
+    }
+    return 0;
+}
+void quicksort(int left,int right)
+{
+    int i,j,t,begin;
+    if(left>right)
+    {
+        return;
+    }
+    begin=a[left];
+    i=left;
+    j=right;
+    while(i!=j)
+    {
+        while(a[j]>=begin&&i<j)
+        {
+            --j;
+        }
+        while(a[i]<=begin&&i<j)
+        {
+            ++i;
+        }
+        if(i<j)
+        {
+            t=a[i];
+            a[i]=a[j];
+            a[j]=t;
+        }
+    }
+    a[left]=a[i];
+    a[i]=begin;
+    quicksort(left,i-1);
+    quicksort(i+1,right);
+}
