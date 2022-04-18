@@ -1,0 +1,14 @@
+#include <stdio.h>
+int main()
+{
+    char s[81][80];
+    int i=0;
+    while(scanf("%s",s[i++])&&(getchar()!='\n'));
+    while(--i)
+    {
+        printf("%s ",s[i]);
+    }
+    printf("%s",s[0]);
+    return 0;
+}
+即PTA1009说反话
