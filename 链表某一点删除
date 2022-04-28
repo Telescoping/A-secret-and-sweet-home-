@@ -1,0 +1,26 @@
+Node *delete(Node *head,char a[])
+{
+    Node *p;
+    Node *r;
+    r=p=head;
+    while(p!=NULL&&strcmp(p->s,a)!=0)
+    {
+        r=p;
+        p=p->link;
+    }
+    if(p==NULL)//没找到
+    {
+        t=0;
+    }
+    else if(p==head)
+    {
+        head=p->link;
+        free(p);
+    }
+    else
+    {
+        r->link=p->link;
+        free(p);
+    }
+    return head;
+}
