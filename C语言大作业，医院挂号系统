@@ -1,0 +1,477 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int num=239104835;
+int count=1;
+int cf=1;
+int G[3]={0};
+int a[2]={0};
+int b[3]={0};
+typedef struct information{
+    char name[77];//姓名
+    int A;//挂号单编号
+    int sex;//性别 男：1 女：2
+    int age;//年龄
+    struct information *next;
+}IF;
+void gh();//用于挂号的函数
+void jh();//用于叫号
+void fzs();//用于分诊室
+void dl();//用于显示队列信息
+void tj();//用于统计当天就诊情况
+void menu();//系统操作菜单
+void load();//登录系统 
+void creat();
+IF *head=NULL;//全局变量的头指针，链表名 
+int main()
+{
+    FILE *fp; 
+    FILE *fp1;
+    FILE *fp2;
+    FILE *fp3;
+    fp=fopen("sum.txt","w");//用于更新存储的数据 
+    fp1=fopen("change.txt","w");//创建新的文本，若创建不了直接结束程序 
+    fp2=fopen("information.txt","w");
+    fp3=fopen("c.txt","w");
+    if(fp1==NULL)
+    {
+        printf("\n\t程序出错，请询问工作人员！");
+        exit(0);
+    }
+    if(fp==NULL)
+    {
+        printf("\n\t程序出错，请询问工作人员！");
+        exit(0);
+    }
+    if(fp2==NULL)
+    {
+        printf("\n\t程序出错，请询问工作人员！");
+        exit(0);
+    }
+    if(fp3==NULL)
+    {
+        printf("\n\t程序出错，请询问工作人员！");
+        exit(0);
+    }
+    fclose(fp);
+    fclose(fp1);
+    fclose(fp2);
+    fclose(fp3);
+    remove("sum.txt");
+    rename("change.txt","sum.txt");//更新文本 
+    remove("information.txt");
+    rename("c.txt","information.txt");
+    load();
+    return 0;
+}
+void load()//账号注册或登录界面
+{
+    system("cls");//清屏 
+    FILE *fp1;
+    fp1=fopen("account.txt","a+");
+    FILE *fp2;
+    fp2=fopen("account.txt","r");
+    if(fp1==NULL)
+    {
+        printf("\n\t程序出错，请询问工作人员！");
+        exit(0);
+    }
+    if(fp2==NULL)
+    {
+        printf("\n\t程序出错，请询问工作人员！");
+        exit(0);
+    }
+    int n;
+    char t[100];//存储账号 
+    char j[100];//存储密码 
+    printf("\n\t*-------------欢迎使用医院挂号系统-------------*");
+    printf("\n\t管理员请先登录(输入1)（如果没有账号请注册（输入0））：");
+    scanf("%d",&n);
+    if(n==0)
+    {
+        printf("\n\t请输入注册账号(账号为6-9位，由数字和字母组成，不可含有字符，不含空格）:");
+        scanf("%s",t);
+        int len=strlen(t);
+        if(len<6||len>9)//判断账号是否符合条件 
+        {
+            printf("\n\t对不起，格式有误，请重新注册");
+            system("pause");
+            exit(0);//直接退出程序 
+        }
+        printf("\n\t请输入注册密码（密码为6-9位，由数字和字母组成，可含字符，不含空格）:");
+        scanf("%s",j);
+        int len1=strlen(j);
+        if(len1<6||len1>9)//判断密码是否符合条件 
+        {
+            printf("\n\t对不起，格式有误，请重新注册");
+            system("pause");
+            exit(0);//直接退出程序 
+        }
+        printf("\n\t注册成功！！！请保管好你的账户，不要借给别人！");
+        fprintf(fp1,"%-20s %-20s\n",t,j);
+        system("pause");
+        menu();
+    }
+    else if(n==1)
+    {
+        char x[100],y[100];
+        printf("\n\t请输入账号:");
+        scanf("%s",t);
+        int len2=strlen(t);
+        if(len2<6||len2>9)//判断账号是否输入错误 
+        {
+        	printf("\n\t账号错误，请重新输入。");
+        	system("pause");
+        	load();//重新登录 
+		}
+        printf("\n\t请输入密码:");
+        scanf("%s",j);
+        while(!feof(fp2))
+        {
+            fscanf(fp2,"%s %s",x,y);//在文本中找到存储的账号密码 
+            if(strcmp(x,t)==0)//找到账号相同的一行 
+            {
+                if(strcmp(y,j)==0)//判断对应的密码是否正确 
+                {
+                    printf("\n\t登录成功");
+                    system("pause");
+                    menu();
+                }
+                else
+                {
+                    printf("\n\t密码错误!重启程序！");
+                    system("pause"); 
+                    load();
+                }
+            }
+        }
+    }
+    else
+    {
+        printf("\n\t对不起，您输入有错，请重试！");
+        system("pause");
+        load();
+    }
+}
+void menu()
+{
+    system("cls");
+    int n;//供选择的数
+    printf("\n\t*-------------欢迎使用医院挂号系统-------------*");
+    printf("\n\t* 1 : 挂号");
+    printf("\n\t* 2 : 叫号");
+    printf("\n\t* 3 : 诊室分配");
+    printf("\n\t* 4 : 显示各诊室排队情况");
+    printf("\n\t* 5 : 统计当天就诊患者情况");
+    printf("\n\t* 6 : 退出程序");
+    printf("\n\t* 注意:挂号完毕后，若不继续挂号，请先进行分配诊室，再进行余下操作。");
+    printf("\n\t请输入你想进行操作的数字：");
+    while(scanf("%d",&n)!=EOF)
+    {
+        if(n==6)
+        {
+            exit(0);
+        }
+        switch(n)
+        {
+            case 1: gh(); break;
+            case 2: jh(); break;
+            case 3: fzs(); break;
+            case 4: dl(); break;
+            case 5: tj(); break;
+            default: printf("输入错误请重新输入：\n");break;
+        }
+    }
+}
+void gh()
+{
+    int a=1;//一诊室 
+    int b=2;//二诊室 
+    int c=3;//三诊室 
+    system("cls");
+    printf("\t请依次输入您的各种信息（姓名 性别（男性输入1 女性输入2） 年龄）：\n");
+    FILE *fp;
+    FILE *fp1;
+    fp= fopen("information.txt","a+");//打开一个存储信息的文件
+    fp1=fopen("sum.txt","a+");//用于统计总人数的文件 
+    if(fp1==NULL)
+    {
+        printf("程序运行错误，请重新尝试");
+        system("pause");
+        menu();//返回主菜单进行退出 
+    }
+    if(fp==NULL)
+    {
+        printf("程序运行错误，请重新尝试");
+        system("pause");
+        menu();//返回主菜单进行退出 
+    }
+    creat();//用链表输入内容 
+    head->A=num;//记录挂号单号 
+    ++num;
+    if(head->age>=35)//判断年龄 
+    {
+        printf("\n\t这是您的面诊诊室：第一诊室");
+        printf("\n\t这是您的挂号单号：%d",head->A);
+        fprintf(fp,"%d %-10s %-10d %-10d %-10d %-10d\n",count,head->name,head->sex,head->age,head->A,a);//将信息存储至暂时文本 
+        fprintf(fp1,"%s %-10d %-10d %-10d\n",head->name,head->sex,head->age,head->A);//将信息存储至统计文本 
+    }
+    else if(head->age<35&&head->sex==1)//判断年龄 
+    {
+        printf("\n\t这是您的面诊诊室：第二诊室");
+        printf("\n\t这是您的挂号单号：%d",head->A);
+        fprintf(fp,"%d %-10s %-10d %-10d %-10d %-10d\n",count,head->name,head->sex,head->age,head->A,b);//将信息存储至暂时文本 
+        fprintf(fp1,"%s %-10d %-10d %-10d\n",head->name,head->sex,head->age,head->A);//将信息存储至统计文本 
+    }
+    else
+    {
+        printf("\n\t这是您的面诊诊室：第三诊室");
+        printf("\n\t这是您的挂号单号：%d",head->A);
+        fprintf(fp,"%d %-10s %-10d %-10d %-10d %-10d\n",count,head->name,head->sex,head->age,head->A,c);//将信息存储至暂时文本 
+        fprintf(fp1,"%s %-10d %-10d %-10d\n",head->name,head->sex,head->age,head->A);//将信息存储至统计文本 
+    }
+    ++count;//序号 
+    fclose(fp);
+    fclose(fp1);
+    system("pause");
+    menu();
+}
+void jh()
+{
+    
+    if(count==1)//判断是否挂号，若没挂号count=1 
+    {
+        system("cls");
+        printf("\n\t对不起，请先挂号。");
+        system("pause");
+        menu();
+    }
+    else {
+        system("cls");
+        FILE *fp1;
+        FILE *fp2;
+        FILE *fp3;
+        fp1 = fopen("information.txt", "r+");//用于读取文件 
+        fp3 = fopen("save.txt", "w");//用于打开新的存储文件 
+        fp2 = fopen("save.txt", "a+");//用于存储未叫过号的信息 
+        if (fp1 == NULL)
+        {
+            printf("\n\t对不起，程序出现错误，请重新打开程序。");
+            system("pause");
+            exit(0);
+        }
+        if (fp2 == NULL) 
+        {
+            printf("\n\t对不起，程序出现错误，请重新打开程序。");
+            system("pause");
+            exit(0);
+        }
+        if (fp3 == NULL) 
+        {
+            printf("\n\t对不起，程序出现错误，请重新打开程序。");
+            system("pause");
+            exit(0);
+        }
+        int p_count;//序号 
+        char p_name[77];//姓名 
+        int p_sex;//性别 
+        int p_A;//挂号单号 
+        int p_age;//年龄 
+        int p_;//诊室序号 
+        while (!feof(fp1))
+        {
+            fscanf(fp1, "%d %s %d %d %d %d", &p_count, p_name, &p_sex, &p_age, &p_A, &p_);//读取数据 
+            if (!feof(fp1))//防止feof读取两遍最后一行的内容 
+            {
+                if (p_count == cf) //判断是否是第一位 
+				{
+                    printf("\n\t叫 号 大 屏");
+                    printf("\n\t%s %d", p_name, p_A);
+                    printf("\n\t请该患者立即去对应门诊面诊！");
+                    break;
+                }
+            }
+        }
+        while (!feof(fp1)) 
+        {
+            fscanf(fp1, "%d %s %d %d %d %d", &p_count, p_name, &p_sex, &p_age, &p_A, &p_);//读取数据 
+            if (!feof(fp1))//防止feof读取两遍最后一行的内容 
+            {
+                if (p_count != cf)//如果不是第一位，将剩余数据存储至另一文本 
+                {
+                    fprintf(fp2, "%d %-10s %-10d %-10d %-10d %-10d\n", p_count, p_name, p_sex, p_age, p_A, p_);
+                }
+            }
+        }
+        ++cf;//序号增加 
+        fclose(fp1);
+        fclose(fp2);
+        fclose(fp3);
+        remove("information.txt");//删除原文本 
+        rename("save.txt", "information.txt");//将存储余下数据的文本改名为前文本 
+        system("pause");
+        menu();
+    }
+}
+void fzs()
+{
+    system("cls");
+    int f_count;//序号 
+    char f_name[77];//姓名 
+    int f_sex;//性别 
+    int f_A;//挂号单号 
+    int f_age;//年龄 
+    int f_;//诊室序号 
+    FILE *fp;
+    fp=fopen("information.txt","r");
+    if(fp==NULL)
+    {
+        printf("\n\t对不起，程序出现错误，请重试。");
+        system("pause");
+        menu();
+    }
+    while(!feof(fp))
+    {
+        fscanf(fp,"%d %s %d %d %d %d",&f_count,f_name,&f_sex,&f_age,&f_A,&f_);//读取数据 
+        if(!feof(fp))	//防止feof读取两遍最后一行的内容 
+        {
+            if(f_age>=35)
+            {
+                printf("\n\t%s被分在第一诊室",f_name);
+                ++G[0];
+            }
+            else if(f_age<35&&f_sex==1)
+            {
+                printf("\n\t%s被分在第二诊室",f_name);
+                ++G[1];
+            }
+            else
+            {
+                printf("\n\t%s被分在第三诊室",f_name);
+                ++G[2];
+            }
+        }
+    }
+    fclose(fp);
+    printf("\n\t诊室已分完毕！");
+    system("pause");
+    menu();
+}
+void dl()
+{
+    system("cls");
+    printf("\n\t*-------------各 诊 室 队 列-------------*");
+    printf("\n\t第 一 诊 室：%d",G[0]);
+    printf("\n\t第 二 诊 室：%d",G[1]);
+    printf("\n\t第 三 诊 室：%d",G[2]);
+    system("pause");
+    menu();
+}
+void tj()
+{
+    system("cls");
+    a[0]=0;
+    a[1]=0;
+    b[0]=0;
+    b[1]=0;
+    b[2]=0;
+    char p_name[77];//名字 
+    int p_sex;//性别 
+    int p_A;//挂号单号 
+    int p_age;//年龄 
+    FILE *fp;
+    FILE *fp1;
+    fp1=fopen("sum.txt","r+");//打开总存储文本 
+    fp=fopen("sum.txt","r+");
+    if(fp==NULL)
+    {
+        printf("程序运行错误，请重新尝试");
+        system("pause");
+        menu();//返回主菜单进行退出 
+    }
+    if(fp1==NULL)
+    {
+        printf("程序运行错误，请重新尝试");
+        system("pause");
+        menu();//返回主菜单进行退出 
+    }
+    while(!feof(fp))
+    {
+        fscanf(fp,"%s %d %d %d",p_name,&p_sex,&p_age,&p_A);
+        if(!feof(fp))//防止feof读取两遍最后一行的内容 
+        {
+            if(p_sex==1)
+            {
+                ++a[0];
+            }
+            else if(p_sex==2)
+            {
+                ++a[1];
+            }
+        }
+    }
+    while(!feof(fp1))
+    {
+        fscanf(fp1,"%s %d %d %d",p_name,&p_sex,&p_age,&p_A);
+        if(!feof(fp1))//防止feof读取两遍最后一行的内容 
+        {
+            if(p_age<=18&&p_age>0)
+            {
+                ++b[0];
+            }
+            else if(p_age<=60&&p_age!=0)
+            {
+                ++b[1];
+            }
+            else if(p_age>60&&p_age!=0)
+            {
+                ++b[2];
+            }
+        }
+    }
+    fclose(fp);
+    fclose(fp1);
+    printf("\n\t至此刻，今日总就诊人数：%d",a[0]+a[1]);
+    printf("\n");
+    printf("\n\t男性就诊人数：%d",a[0]);
+    printf("\n\t女性就诊人数:%d",a[1]);
+    printf("\n");
+    printf("\n\t其中，年龄段在0-18岁的人数：%d",b[0]);
+    printf("\n\t其中，年龄段在19-60岁的人数：%d",b[1]);
+    printf("\n\t其中，年龄段在60岁以上的人数：%d",b[2]);
+    system("pause");
+    menu();
+}
+void creat()
+{
+	//尾插法建立链表 
+    IF *p;//建立结点 
+    IF *tail;//尾节点 
+    tail=head=(IF *) malloc(sizeof(IF));//为头结点创立空间 
+    p=(IF *)malloc(sizeof(IF));//开辟新空间 
+    tail->next=p;//尾节点指向新结点 
+    p->next=NULL;//新结点先指向空 
+    printf("\n\t请输入您的姓名:");
+    scanf("%s",p->name);
+    printf("\n\t请输入您的性别:");
+    scanf("%d",&p->sex);
+    if(p->sex!=1&&p->sex!=2)//判断 
+    {
+        printf("\n\t对不起，您输入的格式不正确，请重新输入。");
+        system("pause");
+        menu();
+    }
+    printf("\n\t请输入您的年龄:(如果是刚出生的婴儿请填1岁)");
+    scanf("%d",&p->age);
+    if(p->age<=0)
+    {
+        printf("\n\t对不起，您输入的格式不正确，请重新输入。");
+        system("pause");
+        menu();
+    }
+    tail=p;//尾结点指向新结点 
+    p=p->next;//新结点指向下一个 
+    head=tail;//头指针指向尾节点 
+    free(p);//删除新结点，释放空间 
+}
