@@ -1,0 +1,128 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#define MaxSize 10000
+#define M 8//迷宫实际行
+#define N 8//迷宫实际列
+int maze[M+2][N+2]=
+        {	{1,1,1,1,1,1,1,1,1,1},
+             {1,0,0,1,0,0,0,1,0,1},
+             {1,0,0,1,0,0,0,1,0,1},
+             {1,0,0,0,0,1,1,0,0,1},
+             {1,0,1,1,1,0,0,0,0,1},
+             {1,0,0,0,1,0,0,0,0,1},
+             {1,0,1,0,0,0,1,0,0,1},
+             {1,0,1,1,1,0,1,1,0,1},
+             {1,1,0,0,0,0,0,0,0,1},
+             {1,1,1,1,1,1,1,1,1,1}
+        };
+typedef struct
+{
+    int x;
+    int y;
+}item;
+item move[4]={{0,1},{1,0},{0,-1},{-1,0}};
+typedef struct
+{
+    int x;
+    int y;
+    int d;
+}Dp;
+typedef struct
+{
+    Dp data[MaxSize];
+    int top;
+}SeqStack,*PSeqStack;
+PSeqStack Init_SeqStack()
+{
+    PSeqStack S;
+    S=(PSeqStack)malloc(sizeof(SeqStack));
+    if(S)
+    {
+        S->top=-1;
+    }
+    return S;
+}
+void Push_SeqStack(PSeqStack S, Dp x)
+{
+    ++S->top;
+    S->data[S->top]=x;
+}
+void Pop_SeqStack(PSeqStack S,Dp *x)
+{
+    *x=S->data[S->top];;
+    --S->top;
+}
+void Destroy_SeqStack(PSeqStack *S)
+{
+    if(*S)
+    {
+        free(*S);
+    }
+    *S=NULL;
+    return;
+}
+bool Empty_SeqStack(PSeqStack S)
+{
+    if(S->top==-1)
+    {
+        return true;
+    }
+    else return false;
+}
+int mazepath(int maze[][N+2],item move[],int x0,int y0)
+{
+    PSeqStack S;
+    Dp temp;
+    int x,y,d,i,j;
+    temp.x=x0;
+    temp.y=y0;
+    temp.d=-1;
+    S=Init_SeqStack();
+    Push_SeqStack(S,temp);//迷宫入口点入栈
+    while(!Empty_SeqStack(S))
+    {
+        Pop_SeqStack(S,&temp);
+        x=temp.x;
+        y=temp.y;
+        d=temp.d+1;
+        while(d<4)//存在剩余方向可以搜索
+        {
+            i=x+move[d].x;
+            j=y+move[d].y;
+            if(maze[i][j]==0)//此方向可走
+            {
+                temp.x=x;
+                temp.y=y;
+                temp.d=d;
+                Push_SeqStack(S,temp);
+                x=i;
+                y=j;
+                maze[i][j]=-1;
+                if(x==M&&y==N)//迷宫可解
+                {
+                    while(!Empty_SeqStack(S))
+                    {
+                        Pop_SeqStack(S,&temp);
+                        printf("(%d,%d)<-",temp.x,temp.y);//打印路径
+                    }
+                    Destroy_SeqStack(&S);
+                    return 1;
+                }
+                else d=0;//方向复位
+            }
+            else ++d;//换个方向
+        }
+    }
+    Destroy_SeqStack(&S);
+    printf("\n迷宫无路\n");
+    return 0;
+}
+int main()
+{
+    int x0,y0;
+    x0=1;
+    y0=1;
+    mazepath(maze,move,x0,y0);
+    return 0;
+}
