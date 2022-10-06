@@ -1,0 +1,98 @@
+#include <iostream>
+#define MAX_SIZE 100
+template<typename T>
+struct queue{
+    T data[MAX_SIZE];
+    int front,back;
+    int num;
+};
+template<typename T>
+queue<T> *creat()
+{
+    queue<T> *p;
+    p = new queue<T>;
+    p->back = p->front = MAX_SIZE-1;
+    p->num = 0;
+    return p;
+}
+template<typename T>
+void push(queue<T> *q,T data)
+{
+    if(q->num == MAX_SIZE)
+    {
+        std::cout << "队满" << std::endl;
+        return;
+    }
+    else
+    {
+        q->back = (q->back+1) % MAX_SIZE;
+        q->data[q->back] = data;
+        q->num++;
+        return ;
+    }
+}
+template<typename T>
+T pop(queue<T> *q)
+{
+    if(q->num == 0)
+    {
+        std::cout << "队空" << std::endl;
+        return 0;
+    }
+    else
+    {
+        T x=q->data[(q->front+1)%MAX_SIZE];
+        q->front = (q->front+1)%MAX_SIZE;
+        q->num--;
+        return x;
+    }
+}
+template<typename T>
+bool empty(queue<T> *q)
+{
+    if(q->num == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+template<typename T>
+void output(queue<T> *q)
+{
+    if(empty(q))
+    {
+        std::cout << "队空" << std::endl;
+        return ;
+    }
+    int t=q->front;
+    int i=2;
+    t=(t+1)%MAX_SIZE;
+    std::cout << "队头元素为" << q->data[t] << std::endl;
+    while(t != q->back && (t+1)%MAX_SIZE != q->back)
+    {
+        t=(t+1)%MAX_SIZE;
+        std::cout << "第" << i << "号元素为" << q->data[t] << std::endl;
+        i++;
+    }
+    std::cout << "队尾元素为" << q->data[q->back] << std::endl;
+    std::cout << "该队列元素个数为" << q->num << std::endl;
+}
+int main()
+{
+    queue<int> *q;
+    q = creat<int>();
+    output(q);
+    std::cout << std::endl;
+    for(int i=1;i<5;++i)
+    {
+        push(q,i);
+        std::cout << "将" << i << "入队" << std::endl;
+    }
+    std::cout << std::endl;
+    output(q);
+    std::cout << "将队头元素" << pop(q) << "出列" << std::endl;
+    output(q);
+}
