@@ -1,0 +1,93 @@
+#include <iostream>
+using namespace std;
+template<typename T>
+class Stack{
+public:
+    Stack(int size);
+    ~Stack();
+    Stack();
+    bool Isempty();
+    bool Isfull();
+    void clear();
+    bool push(T a);
+    bool pop(T &a);//用引用会安全方便
+    bool Top(T &a);
+
+private:
+    T *s;
+    int size;
+    int top;
+};
+template<typename T>//普通构造函数
+Stack<T>::Stack(int size) {
+    this->size=size;
+    s=new T[size];
+    top=-1;
+}
+template<typename T>//缺省样式的构造函数
+Stack<T>::Stack() :size(0){
+    s=new T[size];
+    top=-1;
+}
+template<typename T>
+bool Stack<T>::Isempty() {
+    if(top==-1)
+    {
+        return true;
+    }
+    else return false;
+}
+template<typename T>
+bool Stack<T>::Isfull() {
+    if(top==size-1)
+    {
+        return true;
+    }
+    else return false;
+}
+template<typename T>
+void Stack<T>::clear() {
+    top=-1;
+}
+template<typename T>
+bool Stack<T>::push(T a) {
+    if(Isfull())
+    {
+        return false;
+    }
+    else
+    {
+        ++top;
+        s[top]=a;
+        return true;
+    }
+}
+template<typename T>
+bool Stack<T>::pop(T &a){
+    if(Isempty())
+    {
+        return false;
+    }
+    else
+    {
+        a=s[top];
+        top--;
+    }
+}
+template<typename T>
+bool Stack<T>::Top(T &a) {
+    if(Isempty())
+    {
+        return false;
+    }
+    else
+    {
+        a=s[top];
+        return true;
+    }
+}
+template<typename T>
+Stack<T>::~Stack<T>() {
+    delete []s;
+}
+
